@@ -3605,85 +3605,6 @@ export interface FlatListStatic<ItemT> extends React.ComponentClass<FlatListProp
     recordInteraction: () => void
 }
 
-export interface SectionListData<ItemT> {
-
-    data: ItemT[]
-
-    key: string
-
-    renderItem?: (info: {item: ItemT, index: number}) => React.ReactElement<any> | null
-
-    keyExtractor?: (item: ItemT, index: number) => string
-}
-
-/**
- * @see https://facebook.github.io/react-native/docs/sectionlist.html
- */
-export interface SectionListProperties<ItemT> extends ScrollViewProperties {
-
-    /**
-     * Rendered in between adjacent Items within each section.
-     */
-    ItemSeparatorComponent?: React.ComponentClass<any> | null
-
-    /**
-     * Rendered at the very end of the list.
-     */
-    ListFooterComponent?: React.ComponentClass<any> | null
-
-    /**
-     * Rendered at the very beginning of the list.
-     */
-    ListHeaderComponent?: React.ComponentClass<any> | null
-
-    /**
-     * Rendered in between each section.
-     */
-    SectionSeparatorComponent?: React.ComponentClass<any> | null
-
-    /**
-     * Used to extract a unique key for a given item at the specified index. Key is used for caching
-     * and as the react key to track item re-ordering. The default extractor checks `item.key`, then
-     * falls back to using the index, like React does.
-     */
-    keyExtractor?: (item: ItemT, index: number) => string
-
-    /**
-     * If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality.
-     * Make sure to also set the refreshing prop correctly.
-     */
-    onRefresh?: (() => void) | null
-
-    /**
-     * Set this true while waiting for new data from a refresh.
-     */
-    refreshing?: boolean | null
-
-    /**
-     * Default renderer for every item in every section. Can be over-ridden on a per-section basis.
-     */
-    renderItem?: (info: {item: ItemT, index: number}) => React.ReactElement<any> | null
-
-    /**
-     * Rendered at the top of each section. Sticky headers are not yet supported.
-     */
-    renderSectionHeader?: (info: {section: SectionListData<ItemT>}) => React.ReactElement<any> | null
-
-    /**
-     * An array of objects with data for each section.
-     */
-    sections: SectionListData<ItemT>[]
-
-    /**
-     * Render a custom scroll component, e.g. with a differently styled `RefreshControl`.
-     */
-    renderScrollComponent?: (props: ScrollViewProperties) => React.ReactElement<ScrollViewProperties>
-}
-
-export interface SectionListStatic<SectionT> extends React.ComponentClass<SectionListProperties<SectionT>> {
-
-}
-
 /**
  * @see https://facebook.github.io/react-native/docs/listview.html#props
  */
@@ -6660,7 +6581,6 @@ export interface DatePickerAndroidOpenOption {
     date?: Date | number
     minDate?: Date | number
     maxDate?: Date | number
-    mode?: 'calendar' | 'spinner' | 'default'
 }
 
 // Deduced from DatePickerAndroid.android.js
@@ -7017,42 +6937,28 @@ export type Permission =
     "android.permission.READ_EXTERNAL_STORAGE" |
     "android.permission.WRITE_EXTERNAL_STORAGE"
 
-export type PermissionStatus = "granted" | "denied" | "never_ask_again"
-
 export interface PermissionsAndroidStatic {
-    /**
-     * A list of permission results that are returned
-     */
-    RESULTS: {[key: string]: PermissionStatus}
     /**
      * A list of specified "dangerous" permissions that require prompting the user
      */
     PERMISSIONS: {[key: string]: Permission}
     new(): PermissionsAndroidStatic
     /**
-     * Deprecated
-     */
-    checkPermission(permission: Permission): Promise<boolean>
-    /**
      * Returns a promise resolving to a boolean value as to whether the specified
      * permissions has been granted
      */
-    check(permission: Permission): Promise<boolean>
-    /**
-     * Deprecated
-     */
-    requestPermission(permission: Permission, rationale?: Rationale): Promise<boolean>
+    checkPermission(permission: Permission): Promise<boolean>
     /**
      * Prompts the user to enable a permission and returns a promise resolving to a
-     * string value indicating whether the user allowed or denied the request
+     * boolean value indicating whether the user allowed or denied the request
      *
      * If the optional rationale argument is included (which is an object with a
-     * title and message), this function checks with the OS whether it is necessary
-     * to show a dialog explaining why the permission is needed
+     * `title` and `message`), this function checks with the OS whether it is
+     * necessary to show a dialog explaining why the permission is needed
      * (https://developer.android.com/training/permissions/requesting.html#explain)
      * and then shows the system permission dialog
      */
-    request(permission: Permission, rationale?: Rationale): Promise<string>
+    requestPermission(permission: Permission, rationale?: Rationale): Promise<boolean>
 }
 
 export interface PushNotificationPermissions {
@@ -7226,7 +7132,7 @@ export interface PushNotificationIOSStatic {
      * This method returns a promise that resolves to either the notification
      * object if the app was launched by a push notification, or `null` otherwise.
      */
-    getInitialNotification(): Promise<PushNotification>
+    getInitialNotification(): PushNotification
 }
 
 export interface SettingsStatic {
@@ -8073,6 +7979,26 @@ export interface ImageStoreStatic {
 export type fetch = (url: string, options?: Object) => Promise<any>
 export const fetch: fetch;
 
+interface FormDataHeaders {
+    [name: string]: string
+};
+
+interface FormDataPart1 {
+    string: string;
+    headers: FormDataHeaders;
+};
+interface FormDataPart2 {
+    uri: string;
+    headers: FormDataHeaders;
+    name?: string;
+    type?: string;
+}
+
+export class FormData {
+    append(key: string, value: any): void;
+    getParts(): Array<FormDataPart1 | FormDataPart2>;
+}
+
 // Timers polyfill
 export type timedScheduler = (fn: string | (() => any), delay?: number) => number
 export type setTimeout = timedScheduler
@@ -8560,9 +8486,6 @@ export type StatusBar = StatusBarStatic
 
 export var ScrollView: ScrollViewStatic
 export type ScrollView = ScrollViewStatic
-
-export var SectionList: SectionListStatic<any>
-export type SectionList<ItemT> = SectionListStatic<ItemT>
 
 export var SnapshotViewIOS: SnapshotViewIOSStatic
 export type SnapshotViewIOS = SnapshotViewIOSStatic
