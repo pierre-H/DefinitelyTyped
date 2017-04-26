@@ -215,6 +215,10 @@ export type NavigationScreenOptions = {
    * Options passed to the card stack for this screen.
    */
   cardStack?: NavigationScreenOption<CardStackConfig>;
+  /**
+   * Style of navigation
+   */
+  style?: ViewStyle;
 }
 
 export type NavigationScreenConfig = {
